@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	
+	<settings>
+		<!-- 两个一块设置才会起作用 
+	    启用懒加载，必须按照下面方式配置 -->
+		<setting name="lazyLoadingEnabled" value="true"/>
+		<!-- 将积极加载改为消极加载即按需加载。必须写,且为false才会懒加载   -->
+		<setting name="aggressiveLazyLoading" value="false"/>
+	</settings>
+	
+	<!--设置别名  alias 唯一  可以随便写-->
+	<typeAliases>
+		<typeAlias type="com.qianfeng.entity.User" alias="User"/>
+		<typeAlias type="com.qianfeng.entity.Authority" alias="Authority"/>
+		<typeAlias type="com.qianfeng.entity.Role" alias="Role"/>
+		<typeAlias type="com.qianfeng.entity.LoginLog" alias="LoginLog"/>
+		<typeAlias type="com.qianfeng.entity.Staff" alias="Staff"/>
+		<typeAlias type="com.qianfeng.entity.Grade" alias="Grade"/>
+		<typeAlias type="com.qianfeng.entity.RoleauthorityKey" alias="RoleauthorityKey"/>
+		<typeAlias type="com.qianfeng.entity.Student" alias="Student"/>
+		<typeAlias type="com.qianfeng.entity.Course" alias="Course"/>
+		<typeAlias type="com.qianfeng.entity.Department" alias="Department"/>
+		<typeAlias type="com.qianfeng.entity.Check" alias="Check"/>
+	</typeAliases>
+	
+</configuration>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IRoleauthorityDao">
+  <resultMap  type="RoleauthorityKey" id="roleAuthorityMap">
+    <id column="aid" jdbcType="INTEGER" property="aid" />
+    <id column="rid" jdbcType="INTEGER" property="rid" />
+  </resultMap>
+  <!-- 角色权限的时候使用 -->
+  <select id="findRoleauthorityKeyByRid" parameterType="int" resultType="RoleauthorityKey">
+  	select * from t_roleauthority where rid=#{rid}
+  </select>
+  
+  <!-- 资源管理使用 -->
+  <delete id="deleteRoleAuthorityByAid" parameterType="int">
+  	delete from t_roleauthority where aid=#{aid} 
+  </delete>
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IRoleDao">
+  <resultMap type="Role" id="roleMap">
+    <id column="rid" jdbcType="INTEGER" property="rid" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="parentId" jdbcType="INTEGER" property="parentid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, info, name, parentId
+  </sql>
+  
+  <!-- <select id="findAllRole" resultType="Role">
+  	select * from t_role;
+  </select> -->
+  
+  <select id="findAllRole"  resultType="Role"  parameterType="map">
+  	select * from (SELECT u.id uid,u.no,u.name uname,GROUP_CONCAT(t_role.info SEPARATOR '/') as info,u.flag FROM t_user u
+	INNER JOIN t_userrole
+	ON u.id=t_userrole.uid
+	INNER JOIN t_role
+	ON t_userrole.rid=t_role.id GROUP BY u.`no` ORDER BY u.id ASC) AS t
+	<where>
+		<if test="no!=null">
+			and t.no like #{no}
+		</if>
+		<if test="flag!=null">
+			and t.flag=#{flag}
+		</if>
+	</where>
+	limit #{index},#{size}
+  </select>
+  <select id="count"  resultType="int">
+  	select count(1) from t_role
+  </select>
+  
+   <select id="findRoles"  resultType="Role">
+  	select * from t_role
+  	
+  </select>
+  
+  <select id="findRoles2"  resultType="Role" parameterType="map">
+  	select r.* from t_role r
+  	<where>
+  		<if test="name!=null">
+  			and r.name=#{name}
+  		</if>
+  	</where>
+  	limit #{index},#{size}
+  </select>
+  
+  <insert id="addRoles" parameterType="map">
+  	insert into t_userrole(uid,rid) values(#{uid},#{rid})
+  </insert>
+  <delete id="deleteUserRole">
+  	delete from t_role where id=#{id}
+  </delete>
+  
+  <delete id="deleteUser">
+  	delete from t_userrole where rid=#{id}
+  </delete>
+  
+  <delete id="deleteUserRoleByUid">
+  	delete from t_userrole where uid=#{uid}
+  </delete>
+  
+</mapper>

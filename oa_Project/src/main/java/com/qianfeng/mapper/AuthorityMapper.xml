@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IAuthorityDao">
+  <resultMap type="Authority"  id="authorityMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="aicon" jdbcType="VARCHAR" property="aicon" />
+    <result column="aurl" jdbcType="VARCHAR" property="aurl" />
+    <result column="parentId" jdbcType="INTEGER" property="parentid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, aicon, aurl, parentId, title, type
+  </sql>
+  
+  <select id="findAuthorityByPid" parameterType="map" resultType="Authority">
+		SELECT t_authority.* FROM t_user 
+		INNER JOIN t_userrole
+		ON t_user.id=t_userrole.uid
+		INNER JOIN t_role
+		ON t_userrole.rid=t_role.id
+		INNER JOIN t_roleauthority
+		ON t_role.id=t_roleauthority.rid
+		INNER JOIN t_authority
+		ON t_roleauthority.aid=t_authority.id
+		WHERE t_user.`no`=#{no} AND t_authority.parentId=#{parentId}
+  </select>
+  
+  <select id="findAuthByRid" resultType="Authority" parameterType="int">
+		select t_authority.* from t_role 
+		INNER JOIN t_roleauthority
+		ON t_role.id=t_roleauthority.rid
+		INNER JOIN t_authority
+		ON t_roleauthority.aid=t_authority.id where t_role.id=#{id}
+  </select>
+  
+  <select id="count" resultType="int">
+		select count(1) from t_authority
+  </select>
+  <select id="findAllAuth" resultType="Authority">
+		select * from t_authority
+  </select>
+  <select id="findAllAuth2" resultType="Authority" parameterType="map">
+		select * from t_authority limit #{index},#{size}
+  </select>
+  
+  <delete id="deleteRoleAuthorityByRid" parameterType="int">
+  	delete from t_roleauthority where rid=#{id}
+  </delete>
+  
+  <insert id="addByRAid" parameterType="map">
+  	insert into t_roleauthority(rid,aid) values(#{rid},#{aid})
+  </insert>
+  
+  <insert id="authorityadd" parameterType="Authority">
+  	insert into t_authority(aicon,aurl,parentId,title,type) values(#{aicon},#{aurl},#{parentId},#{title},#{type})
+  </insert>
+  
+  <select id="findFirstLevel" resultType="Authority" parameterType="int">
+		select * from t_authority where parentId=#{parentId}
+  </select>
+  
+  <select id="findAuthById" resultType="Authority" parameterType="int">
+		select * from t_authority where id=#{id}
+  </select>
+  
+  <delete id="deleteAuthorityByid" parameterType="int">
+  	delete from t_authority where id=#{id}
+  </delete>
+  
+  <!-- 资源管理中修改资源权限 -->
+  <update id="courseupdate" parameterType="Authority">
+  	update t_authority set aicon=#{aicon},title=#{title} where id=#{id}
+  </update>
+  
+  
+</mapper>

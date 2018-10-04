@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IStudentDao">
+  <resultMap type="Student" id="studentMap">
+    <id column="no" jdbcType="VARCHAR" property="no" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="birthday" jdbcType="DATE" property="birthday" />
+    <result column="cardno" jdbcType="VARCHAR" property="cardno" />
+    <result column="school" jdbcType="VARCHAR" property="school" />
+    <result column="education" jdbcType="VARCHAR" property="education" />
+    <result column="gid" jdbcType="INTEGER" property="gid" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="introno" jdbcType="VARCHAR" property="introno" />
+    <result column="createdate" jdbcType="DATE" property="createdate" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    no, name, sex, birthday, cardno, school, education, gid, flag, email, qq, phone, 
+    introno, createdate, photo
+  </sql>
+ 
+ <insert id="studentadd" parameterType="Student">
+ 	insert into t_student(no,name,sex,birthday,cardno,school,education,gid,flag,email,qq,phone,introno,createdate,photo) values(#{no},#{name},#{sex},#{birthday},#{cardno},#{school},#{education},#{gid},#{flag},#{email},#{qq},#{phone},#{introno},#{createdate},#{photo})
+ </insert>
+ 
+ <select id="count" resultType="int">
+ 	select count(1) from t_student where flag=1
+ </select>
+ 
+ <select id="findStudentByNo" parameterType="string" resultType="Student">
+ 	select * from t_student where no=#{no}
+ </select>
+ 
+ <delete id="deleteStudentByNo" parameterType="string">
+ 	delete from t_student where no=#{no}
+ </delete>
+ 
+ <!--学员管理中使用  -->
+ <select id="findAllStudent" resultType="Student" parameterType="map">
+ 	select t_student.*,t_grade.`name` gname from t_student
+	INNER JOIN t_grade
+	ON t_student.gid=t_grade.id
+	where t_student.flag=1
+	limit #{index},#{size}
+ </select>
+ 
+ <!--班级管理中删除班级使用  -->
+ <select id="findStudentByGid" parameterType="int" resultType="Student">
+ 	select * from t_student where gid=#{id}
+ </select>
+ 
+ <insert id="addStudent" parameterType="Student">
+ 	insert into t_student(no,name,sex,birthday,cardno,school,education,gid,flag,email,qq,phone,introno,createdate,photo) values(#{no},#{name},#{sex},#{birthday},#{cardno},#{school},#{education},#{gid},#{flag},#{email},#{qq},#{phone},#{introno},#{createdate},#{photo})
+ </insert>
+</mapper>

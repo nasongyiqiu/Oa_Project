@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.ICheckDao">
+  <resultMap type="Check" id="checkMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="info" jdbcType="VARCHAR" property="info" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="startname" jdbcType="VARCHAR" property="startname" />
+    <result column="startno" jdbcType="VARCHAR" property="startno" />
+    <result column="startdate" jdbcType="DATE" property="startdate" />
+    <result column="enddate" jdbcType="DATE" property="enddate" />
+    <result column="days" jdbcType="INTEGER" property="days" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, info, type, startname, startno, startdate, enddate, days, pid, flag
+  </sql>
+  <select id="findAllCheck" parameterType="map" resultType="Check">
+  	select * from t_check 
+  	<where>
+  		<if test="startno!=null">
+  			and startno=#{startno}
+  		</if>
+  		<if test="rname!=null">
+  			and rname=#{rname}
+  		</if>
+  		<if test="flag!=null">
+  			and flag=#{flag}
+  		</if>
+  	</where>
+  		limit #{index},#{size}
+  </select>
+  <select id="count" resultType="int" parameterType="map">
+  	select count(1) from t_check 
+  	<where>
+  		<if test="startno!=null">
+  			and startno=#{startno}
+  		</if>
+  		<if test="rname!=null">
+  			and rname=#{rname}
+  		</if>
+  		<if test="flag!=null">
+  			and flag=#{flag}
+  		</if>
+  	</where>
+  	 
+  </select>
+  
+  <select id="findCheckOne" parameterType="map" resultType="Check">
+  	select * from t_check
+  	<where>
+  		<if test="id!=null">
+  			and id=#{id}
+  		</if>
+  		<if test="pid!=null">
+  			and pid=#{pid}
+  		</if>
+  	</where> 
+  </select>
+  
+  <update id="calcelCheck" parameterType="map">
+  	UPDATE t_check SET flag=4 WHERE id=#{id} and pid=#{pid}
+  </update>
+  
+  <insert id="addCheck" parameterType="Check">
+  	insert into t_check(id,info,type,startname,startno,startdate,enddate,days,pid,flag,rname) values(#{id},#{info},#{type},#{startname},#{startno},#{startdate},#{enddate},#{days},#{pid},#{flag},#{rname})
+  </insert>
+  
+  <update id="updateCheck" parameterType="map">
+  	update t_check set flag=#{flag} where id=#{id}
+  </update>
+  
+</mapper>

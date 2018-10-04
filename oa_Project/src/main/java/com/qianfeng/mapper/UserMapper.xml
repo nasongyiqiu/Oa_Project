@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IUserDao">
+  <resultMap type="User"  id="userMap">
+    <id column="uid" jdbcType="INTEGER" property="id" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="uname" jdbcType="VARCHAR" property="name" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="headphoto" jdbcType="VARCHAR" property="headphoto" />
+    <collection property="roles"
+    	javaType="java.util.ArrayList"
+		ofType="com.qianfeng.entity.Role"
+		resultMap="com.qianfeng.dao.IRoleDao.roleMap">
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, no, password, name, flag, headphoto
+  </sql>
+  <select id="findByNo" parameterType="string" resultType="User">
+    select * from t_user where no=#{no}
+  </select>
+  
+  <select id="count" resultType="int" parameterType="map">
+  	select count(1) from (select * from (SELECT u.id uid,u.no,u.name uname,GROUP_CONCAT(t_role.info SEPARATOR '/') as info,u.flag FROM t_user u
+	INNER JOIN t_userrole
+	ON u.id=t_userrole.uid
+	INNER JOIN t_role
+	ON t_userrole.rid=t_role.id GROUP BY u.`no` ORDER BY u.id ASC) AS t
+	<where>
+		<if test="no!=null">
+			and t.no like #{no}
+		</if>
+		<if test="flag!=null">
+			and t.flag=#{flag}
+		</if>
+	</where>) t1
+  </select>
+  
+  
+  <select id="findUserRole"  resultMap="userMap" parameterType="map">
+  	select * from (SELECT u.id uid,u.no,u.name uname,GROUP_CONCAT(t_userrole.rid SEPARATOR '/') rid,GROUP_CONCAT(t_role.info SEPARATOR '/') as info,u.flag FROM t_user u
+	INNER JOIN t_userrole
+	ON u.id=t_userrole.uid
+	INNER JOIN t_role
+	ON t_userrole.rid=t_role.id GROUP BY u.`no` ORDER BY u.id ASC) AS t
+	<where>
+		<if test="no!=null">
+			and t.no like #{no}
+		</if>
+		<if test="flag!=null">
+			and t.flag=#{flag}
+		</if>
+	</where>
+	limit #{index},#{size}
+  </select>
+  
+  <select id="findById" parameterType="int" resultType="User">
+    select * from t_user where id=#{id}
+  </select>
+  
+  <update id="updateFlag" parameterType="int">
+  	UPDATE t_user SET flag=2 WHERE t_user.id=#{id}
+  </update>
+  
+  <delete id="userdel" parameterType="int">
+  	DELETE FROM t_user WHERE t_user.id=#{id}
+  </delete>
+  
+  <delete id="userroledel" parameterType="int">
+  	DELETE FROM t_userrole WHERE t_userrole.uid=#{id} 
+  </delete>
+  <!--请假时加载上一级领导  -->
+  <select id="findUser" parameterType="string" resultType="User">
+  	SELECT t_user.* FROM t_user
+	INNER JOIN t_userrole
+	ON t_user.id=t_userrole.uid
+	WHERE t_userrole.rid=(SELECT MIN(t_role.parentId) FROM t_user 
+	INNER JOIN t_userrole
+	ON t_user.id=t_userrole.uid
+	INNER JOIN t_role
+	ON t_userrole.rid=t_role.id
+	WHERE t_user.`no`=#{no})
+  </select>
+</mapper>

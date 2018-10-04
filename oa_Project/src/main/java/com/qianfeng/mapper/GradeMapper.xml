@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IGradeDao">
+  <resultMap type="Grade" id="gradeMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="week" jdbcType="INTEGER" property="week" />
+    <result column="createdate" jdbcType="DATE" property="createdate" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+    <result column="cid" jdbcType="INTEGER" property="cid" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, flag, week, createdate, location, cid
+  </sql>
+  <select id="findAllGrade" resultType="Grade">
+    select * from t_grade
+  </select>
+  
+  <select id="findAllGradeByFlag" resultType="Grade">
+    select * from t_grade where flag=1
+  </select>
+  
+  <select id="count" resultType="int">
+    select count(1) from t_grade
+  </select>
+  
+  <select id="findAllGradeAndCourse" resultType="Grade" parameterType="map">
+    SELECT t_grade.*,t_course.`name` cname FROM t_grade
+	INNER JOIN t_course
+	ON t_grade.cid=t_course.id
+	limit #{index},#{size}
+  </select>
+  <!-- 查看班级人数 -->
+  <select id="findCountOfGrade" parameterType="int" resultType="int">
+  	SELECT COUNT(1) from t_student WHERE gid=#{gid}
+  </select>
+  
+<!--查看该课程下面有多少个班级  -->
+  <select id="findCountOfGradeInCourse" parameterType="int" resultType="int">
+  	select count(1) from t_grade where cid=#{id}
+  </select>
+    
+  <select id="findGradeById" resultType="Grade" parameterType="int">
+    select * from t_grade where id=#{id}
+  </select>
+  <select id="findGradeByName" resultType="Grade">
+  	select * from t_grade where name=#{name}
+  </select>
+  <select id="findGradeByLocation" resultType="Grade">
+  	select * from t_grade where location=#{location}
+  </select>
+  
+  <insert id="gradeAdd" parameterType="Grade">
+  	insert into t_grade(name,flag,week,createdate,location,cid) values(#{name},#{flag},#{week},#{createdate},#{location},#{cid})
+  </insert>
+  
+  <delete id="deleteGradeById" parameterType="int">
+  	delete from t_grade where id=#{id}
+  </delete>
+  <update id="gradeUpdate" parameterType="Grade">
+  	update t_grade set name=#{name},week=#{week},location=#{location} where id=#{id}
+  </update>
+</mapper>

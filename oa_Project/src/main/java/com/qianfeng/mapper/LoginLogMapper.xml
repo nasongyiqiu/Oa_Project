@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.ILoginLogDao">
+  <resultMap id="loginLogtMap" type="LoginLog">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="location" jdbcType="VARCHAR" property="location" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, ip, no, createtime, location
+  </sql>
+  
+  	<select id="count" resultType="int">
+		select count(1) from t_loginlog
+	</select>
+	
+	<select id="findByIndexAndSize" parameterType="map" resultType="LoginLog">
+		select * from t_loginlog limit #{index},#{size}
+	</select>
+  	
+	<insert id="add" parameterType="LoginLog">
+		insert into t_loginlog (ip, no, createtime, location) values(#{ip}, #{no}, #{createtime}, #{location})
+	</insert>  
+  
+  
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IStaffDao">
+  <resultMap type="Staff" id="staffMap">
+    <id column="no" jdbcType="VARCHAR" property="no" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="did" jdbcType="INTEGER" property="did" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="qq" jdbcType="VARCHAR" property="qq" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="createdate" jdbcType="DATE" property="createdate" />
+    <result column="photo" jdbcType="VARCHAR" property="photo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    no, name, did, flag, sex, email, qq, phone, createdate, photo
+  </sql>
+  
+  <select id="findAllStaff" resultType="Staff">
+  	select * from t_staff
+  </select>
+  
+  <!-- 查找有效的员工的个数 -->
+  <select id="count" resultType="int">
+  	select count(1) from t_staff where flag=1
+  </select>
+  
+  <select id="findAllStaffByPage" resultType="Staff" parameterType="map">
+  	SELECT t_staff.*,t_depart.`name` dname FROM t_staff
+	INNER JOIN t_depart
+	ON t_staff.did=t_depart.id
+	WHERE t_staff.flag=1 LIMIT #{index},#{size} 
+  </select>
+  
+  <select id="findStaffByNo" parameterType="string" resultType="Staff">
+  	select * from t_staff where no=#{no}
+  </select>
+  
+  <delete id="deleteStaffByNo" parameterType="string">
+  	delete from t_staff where no=#{no}
+  </delete>
+  <update id="updateStaffFlagByNo" parameterType="string">
+  	update t_staff set flag=2 where no=#{no}
+  </update>
+  
+  <select id="findStaffByName" parameterType="string" resultType="Staff">
+  	select * from t_staff where name=#{name}
+  </select>
+  
+  <insert id="addStaff" parameterType="list">
+  	insert into t_staff(no,name,did,flag,sex,email,qq,phone,createdate,photo) values
+  	<foreach collection="list" item="s" separator=",">
+  		(#{s.no},#{s.name},#{s.did},#{s.flag},#{s.sex},#{s.email},#{s.qq},#{s.phone},#{s.createdate},#{s.photo})
+  	</foreach>
+  </insert>
+  <update id="updateStaff" parameterType="Staff">
+  	update t_staff set name=#{name},did=#{did},sex=#{sex},email=#{email},qq=#{qq},phone=#{phone},createdate=#{createdate},photo=#{photo} where no=#{no}
+  </update>
+</mapper>

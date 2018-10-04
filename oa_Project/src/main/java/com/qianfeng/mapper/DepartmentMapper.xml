@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IDepartmentDao">
+  <resultMap type="Department" id="departMap">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="Createtime" jdbcType="DATE" property="createtime" />
+    <result column="flag" jdbcType="INTEGER" property="flag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, Createtime, flag
+  </sql>
+  <select id="findStaffCountOfDepart" parameterType="int" resultType="int">
+  	select count(1) from t_staff where did=#{did}
+  </select>
+  
+  <select id="findAllDepart" resultType="Department">
+  	select * from t_depart where flag=1
+  </select>
+  
+  <select id="findAllDepartment" parameterType="map" resultType="Department">
+  	select * from t_depart where flag=1 limit #{index},#{size}
+  </select>
+  
+  <!--只查询有效的数据  -->
+  <select id="count" resultType="int">
+  	select count(1) from t_depart where flag=1
+  </select>
+  
+  <delete id="deleteDepartmentById" parameterType="int">
+  	delete from t_depart where id=#{id}
+  </delete>
+  
+  <select id="findDepartmentById" parameterType="int" resultType="Department">
+  	select * from t_depart where id=#{id}
+  </select>
+  
+  <update id="updateDepartmentById" parameterType="int">
+  	update t_depart set flag=2 where id=#{id}
+  </update>
+  
+  <update id="updateDepartment" parameterType="Department">
+  	update t_depart set name=#{name} where id=#{id}
+  </update>
+  
+  <insert id="addDepartment" parameterType="Department">
+  	insert into t_depart(name,createtime,flag) values(#{name},#{createtime},#{flag})
+  </insert>
+  
+  <select id="findDepartByName" parameterType="string" resultType="Department">
+  	select * from t_depart where name=#{name}
+  </select>
+</mapper>
